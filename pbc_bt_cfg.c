@@ -75,20 +75,20 @@ const wiced_bt_cfg_settings_t pbap_client_cfg_settings =
         /* Advertisement scan configuration */
         .high_duty_scan_interval         = 96,                                                         /**< High duty scan interval */
         .high_duty_scan_window           = 48,                                                         /**< High duty scan window */
-        .high_duty_scan_duration         = 30,                                                         /**< High duty scan duration in seconds */
+        .high_duty_scan_duration         = 30,                                                         /**< High duty scan duration in seconds (0 for infinite) */
 
         .low_duty_scan_interval          = 2048,                                                       /**< Low duty scan interval  */
         .low_duty_scan_window            = 48,                                                         /**< Low duty scan window */
-        .low_duty_scan_duration          = 30,                                                         /**< Low duty scan duration in seconds */
+        .low_duty_scan_duration          = 30,                                                         /**< Low duty scan duration in seconds (0 for infinite) */
 
         /* Connection scan configuration */
         .high_duty_conn_scan_interval    = 96,                                                         /**< High duty cycle connection scan interval */
         .high_duty_conn_scan_window      = 48,                                                         /**< High duty cycle connection scan window */
-        .high_duty_conn_duration         = 30,                                                         /**< High duty cycle connection duration in seconds */
+        .high_duty_conn_duration         = 30,                                                         /**< High duty cycle connection duration in seconds (0 for infinite) */
 
         .low_duty_conn_scan_interval     = 2048,                                                       /**< Low duty cycle connection scan interval */
         .low_duty_conn_scan_window       = 48,                                                         /**< Low duty cycle connection scan window */
-        .low_duty_conn_duration          = 30,                                                         /**< Low duty cycle connection duration in seconds */
+        .low_duty_conn_duration          = 30,                                                         /**< Low duty cycle connection duration in seconds (0 for infinite) */
 
         /* Connection configuration */
         .conn_min_interval               = WICED_BT_CFG_DEFAULT_CONN_MIN_INTERVAL,                     /**< Minimum connection interval */
@@ -105,25 +105,25 @@ const wiced_bt_cfg_settings_t pbap_client_cfg_settings =
 
         .high_duty_min_interval          = WICED_BT_CFG_DEFAULT_HIGH_DUTY_ADV_MIN_INTERVAL,            /**< High duty undirected connectable minimum advertising interval */
         .high_duty_max_interval          = WICED_BT_CFG_DEFAULT_HIGH_DUTY_ADV_MAX_INTERVAL,            /**< High duty undirected connectable maximum advertising interval */
-        .high_duty_duration              = 30,                                                         /**< High duty undirected connectable advertising duration in seconds */
+        .high_duty_duration              = 30,                                                         /**< High duty undirected connectable advertising duration in seconds (0 for infinite) */
 
         .low_duty_min_interval           = WICED_BT_CFG_DEFAULT_LOW_DUTY_ADV_MIN_INTERVAL,             /**< Low duty undirected connectable minimum advertising interval */
         .low_duty_max_interval           = WICED_BT_CFG_DEFAULT_LOW_DUTY_ADV_MAX_INTERVAL,             /**< Low duty undirected connectable maximum advertising interval */
-        .low_duty_duration               = 60,                                                         /**< Low duty undirected connectable advertising duration in seconds */
+        .low_duty_duration               = 60,                                                         /**< Low duty undirected connectable advertising duration in seconds (0 for infinite) */
         .high_duty_directed_min_interval = WICED_BT_CFG_DEFAULT_HIGH_DUTY_DIRECTED_ADV_MIN_INTERVAL,   /**< High duty directed connectable minimum advertising interval */
         .high_duty_directed_max_interval = WICED_BT_CFG_DEFAULT_HIGH_DUTY_DIRECTED_ADV_MAX_INTERVAL,   /**< High duty directed connectable maximum advertising interval */
 
         .low_duty_directed_min_interval  = WICED_BT_CFG_DEFAULT_LOW_DUTY_DIRECTED_ADV_MIN_INTERVAL,    /**< Low duty directed connectable minimum advertising interval */
         .low_duty_directed_max_interval  = WICED_BT_CFG_DEFAULT_LOW_DUTY_DIRECTED_ADV_MAX_INTERVAL,    /**< Low duty directed connectable maximum advertising interval */
-        .low_duty_directed_duration      = 30,                                                         /**< Low duty directed connectable advertising duration in seconds */
+        .low_duty_directed_duration      = 30,                                                         /**< Low duty directed connectable advertising duration in seconds (0 for infinite) */
 
         .high_duty_nonconn_min_interval  = WICED_BT_CFG_DEFAULT_HIGH_DUTY_NONCONN_ADV_MIN_INTERVAL,    /**< High duty non-connectable minimum advertising interval */
         .high_duty_nonconn_max_interval  = WICED_BT_CFG_DEFAULT_HIGH_DUTY_NONCONN_ADV_MAX_INTERVAL,    /**< High duty non-connectable maximum advertising interval */
-        .high_duty_nonconn_duration      = 30,                                                         /**< High duty non-connectable advertising duration in seconds */
+        .high_duty_nonconn_duration      = 30,                                                         /**< High duty non-connectable advertising duration in seconds (0 for infinite) */
 
         .low_duty_nonconn_min_interval   = WICED_BT_CFG_DEFAULT_LOW_DUTY_NONCONN_ADV_MIN_INTERVAL,     /**< Low duty non-connectable minimum advertising interval */
         .low_duty_nonconn_max_interval   = WICED_BT_CFG_DEFAULT_LOW_DUTY_NONCONN_ADV_MAX_INTERVAL,     /**< Low duty non-connectable maximum advertising interval */
-        .low_duty_nonconn_duration       = 0                                                           /**< Low duty non-connectable advertising duration in seconds */
+        .low_duty_nonconn_duration       = 0                                                           /**< Low duty non-connectable advertising duration in seconds (0 for infinite) */
     },
 
     .gatt_cfg =                                                     /* GATT configuration */
@@ -203,18 +203,7 @@ const wiced_bt_cfg_settings_t pbap_client_cfg_settings =
 
 const uint8_t pbap_client_sdp_db[] = // Define SDP database
 {
-    SDP_ATTR_SEQUENCE_1(120),                                               // length is the sum of all records
-
-    // SDP record for HF ( total length of record: 51 )
-    SDP_ATTR_SEQUENCE_1( 49 ),                                              // 2 bytes, length of the record
-        SDP_ATTR_RECORD_HANDLE( HDLR_HANDS_FREE_UNIT ),                     // 8 byte ( handle=0x10001 )
-        SDP_ATTR_ID( ATTR_ID_SERVICE_CLASS_ID_LIST ),                       // 3 bytes
-        SDP_ATTR_SEQUENCE_1( 6 ),                                           // 2 bytes
-        SDP_ATTR_UUID16( UUID_SERVCLASS_HF_HANDSFREE ),                     // 3 bytes ServiceClass0 UUID_SERVCLASS_HF_HANDSFREE
-        SDP_ATTR_UUID16( UUID_SERVCLASS_GENERIC_AUDIO ),                    // 3 bytes ServiceClass1 UUID_SERVCLASS_GENERIC_AUDIO
-        SDP_ATTR_RFCOMM_PROTOCOL_DESC_LIST( HANDS_FREE_SCN ),               // 17 bytes ( SCN=2 )
-        SDP_ATTR_PROFILE_DESC_LIST( UUID_SERVCLASS_HF_HANDSFREE, 0x0106 ),  // 13 bytes UUID_SERVCLASS_HF_HANDSFREE, version 0x0106
-
+    SDP_ATTR_SEQUENCE_1(70),                                               // length is the sum of all records
     // SDP Record for PBAP Client
     SDP_ATTR_SEQUENCE_1(67),                                                 // 2 bytes, length of the record
         SDP_ATTR_RECORD_HANDLE(HDLR_PBAP_CLIENT_UNIT),                       // 8 bytes
@@ -243,7 +232,7 @@ const wiced_bt_cfg_buf_pool_t pbap_client_cfg_buf_pools[] =
 /*  { buf_size, buf_count } */
     { 64,      12  },      /* Small Buffer Pool */
     { 272,      6  },      /* Medium Buffer Pool (used for HCI & RFCOMM control messages, min recommended size is 360) */
-    { 1056,     6  },      /* Large Buffer Pool  (used for HCI ACL messages) */
+    { 1056,     12 },      /* Large Buffer Pool  (used for HCI ACL messages) */
     { 1056,     1  },      /* Extra Large Buffer Pool - Used for avdt media packets and miscellaneous (if not needed, set buf_count to 0) */
 };
 
