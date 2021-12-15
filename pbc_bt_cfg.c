@@ -230,8 +230,8 @@ const uint8_t pbap_client_sdp_db[] = // Define SDP database
 const wiced_bt_cfg_buf_pool_t pbap_client_cfg_buf_pools[] =
 {
 /*  { buf_size, buf_count } */
-    { 64,      12  },      /* Small Buffer Pool */
-    { 272,      6  },      /* Medium Buffer Pool (used for HCI & RFCOMM control messages, min recommended size is 360) */
+    { 64,       64 },      /* Small Buffer Pool */
+    { 380,      48 },      /* Medium Buffer Pool (used for HCI & RFCOMM control messages, min recommended size is 360) */
     { 1056,     12 },      /* Large Buffer Pool  (used for HCI ACL messages) */
     { 1056,     1  },      /* Extra Large Buffer Pool - Used for avdt media packets and miscellaneous (if not needed, set buf_count to 0) */
 };

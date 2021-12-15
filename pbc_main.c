@@ -111,10 +111,10 @@
 #define WICED_BT_PBC_CANCEL               0x04
 
 #define APP_PBC_FEATURES    ( WICED_BT_PBC_SUP_FEA_DOWNLOADING | WICED_BT_PBC_SUP_FEA_BROWSING | \
-		WICED_BT_PBC_SUP_FEA_DATABASE_ID | WICED_BT_PBC_SUP_FEA_FOLDER_VER_COUNTER | \
-		WICED_BT_PBC_SUP_FEA_VCARD_SELECTING | WICED_BT_PBC_SUP_FEA_ENH_MISSED_CALLS | \
-		WICED_BT_PBC_SUP_FEA_UCI_VCARD_FIELD | WICED_BT_PBC_SUP_FEA_UID_VCARD_FIELD | \
-		WICED_BT_PBC_SUP_FEA_CONTACT_REF | WICED_BT_PBC_SUP_FEA_DEF_CONTACT_IMAGE_FORMAT )
+        WICED_BT_PBC_SUP_FEA_DATABASE_ID | WICED_BT_PBC_SUP_FEA_FOLDER_VER_COUNTER | \
+        WICED_BT_PBC_SUP_FEA_VCARD_SELECTING | WICED_BT_PBC_SUP_FEA_ENH_MISSED_CALLS | \
+        WICED_BT_PBC_SUP_FEA_UCI_VCARD_FIELD | WICED_BT_PBC_SUP_FEA_UID_VCARD_FIELD | \
+        WICED_BT_PBC_SUP_FEA_CONTACT_REF | WICED_BT_PBC_SUP_FEA_DEF_CONTACT_IMAGE_FORMAT )
 
 #define APP_PBC_SETPATH_ROOT              "/"
 #define APP_PBC_SETPATH_UP                ".."
@@ -150,7 +150,8 @@ typedef struct
  Externs
  *******************************************************************************/
 extern void hci_control_hci_trace_cback(wiced_bt_hci_trace_type_t type, uint16_t length, uint8_t* p_data);
-
+extern void hci_control_proc_tx_cmd( wiced_transport_buffer_pool_t* p_pool );
+extern uint32_t  hci_control_proc_rx_cmd( uint8_t *p_data, uint32_t length );
 /*******************************************************************************
  Local functions
  *******************************************************************************/
@@ -179,9 +180,9 @@ wiced_bt_buffer_pool_t* p_key_info_pool;  //Pool for storing the  key info
 const wiced_transport_cfg_t transport_cfg =
     {   WICED_TRANSPORT_UART,
         {{ WICED_TRANSPORT_UART_HCI_MODE, HCI_UART_DEFAULT_BAUD }},
-        { TRANS_UART_BUFFER_SIZE, 2 },
+        { TRANS_UART_BUFFER_SIZE, TRANS_UART_BUFFER_COUNT },
         NULL, hci_control_proc_rx_cmd,
-        NULL
+        hci_control_proc_tx_cmd
     };
 
 
@@ -254,7 +255,8 @@ void hci_control_send_pbc_event(uint16_t evt, hci_control_pbc_event_t *p_data, u
 {
     WICED_BT_TRACE("hci_control_send_pbc_event: Sending Event: %u  to UART\n",  evt);
     uint8_t  *p_trans_buffer;
-
+    /* wait until the tx buffer gets freed */
+    while(wiced_transport_get_buffer_count(transport_pool) == 0);
     if ((p_trans_buffer = (uint8_t *)wiced_transport_allocate_buffer(transport_pool)) == NULL)
     {
         WICED_BT_TRACE("Error no transport buffer\n");
@@ -304,7 +306,7 @@ void pbap_client_write_eir()
     *p++ = 0;
 
     // print EIR data
-    wiced_bt_trace_array("EIR :", (uint8_t*) (pBuf + 1), MIN(p - (uint8_t* )pBuf, 100));
+    WICED_BT_TRACE_ARRAY((uint8_t*) (pBuf + 1), MIN(p - (uint8_t* )pBuf, 100),"EIR :");
     wiced_bt_dev_write_eir(pBuf, (uint16_t) (p - pBuf));
 
     return;
@@ -905,7 +907,8 @@ void wiced_bt_pbc_data_callback(const UINT8 *p_buf, UINT16 nbytes)
 
     uint8_t* p_trans_buffer;
     hci_control_pbc_event_t* p_pbc_event;
-
+    /* wait until the tx buffer gets freed */
+    while(wiced_transport_get_buffer_count(transport_pool) == 0);
     if ((p_trans_buffer = (uint8_t *) wiced_transport_allocate_buffer(transport_pool)) == NULL)
     {
         WICED_BT_TRACE("Error no transport buffer\n");
@@ -1262,8 +1265,9 @@ wiced_result_t pbap_client_management_callback(wiced_bt_management_evt_t event, 
  */
 APPLICATION_START()
 {
-#if defined WICED_BT_TRACE_ENABLE || defined HCI_TRACE_OVER_TRANSPORT
     wiced_transport_init( &transport_cfg );
+
+#if defined WICED_BT_TRACE_ENABLE || defined HCI_TRACE_OVER_TRANSPORT
 
     // Set the debug uart as WICED_ROUTE_DEBUG_NONE to get rid of prints
     // wiced_set_debug_uart(WICED_ROUTE_DEBUG_NONE);
@@ -1283,8 +1287,6 @@ APPLICATION_START()
     // be called with wiced_transport_cfg_t.wiced_tranport_data_handler_t callback present
     // wiced_set_debug_uart(WICED_ROUTE_DEBUG_TO_WICED_UART);
 #endif
-
-    wiced_transport_init(&transport_cfg);
 
     WICED_BT_TRACE( "Starting PBAP Client Application...\n" );
 

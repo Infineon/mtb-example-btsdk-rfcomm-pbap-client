@@ -117,7 +117,7 @@ void hci_control_handle_set_local_bda( uint8_t *p_bda)
 }
 
 /*
- *  Handle Inquiry result callback from teh stack, format and send event over UART
+ *  Handle Inquiry result callback from the stack, format and send event over UART
  */
 void hci_control_inquiry_result_cback( wiced_bt_dev_inquiry_scan_result_t *p_inquiry_result, uint8_t *p_eir_data )
 {
@@ -302,6 +302,14 @@ void hci_control_send_encryption_changed_evt( uint8_t encrypted ,  wiced_bt_devi
     }
 
     wiced_transport_send_data( HCI_CONTROL_EVENT_ENCRYPTION_CHANGED, event_data, cmd_bytes );
+}
+
+/**
+ * Handle transmit complete event over transport
+ */
+void hci_control_proc_tx_cmd( wiced_transport_buffer_pool_t* p_pool )
+{
+	WICED_BT_TRACE( "hci_control_proc_tx_cmd:%d\n", wiced_transport_get_buffer_count(p_pool) );
 }
 
 /*

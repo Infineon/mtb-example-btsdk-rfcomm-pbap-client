@@ -154,8 +154,6 @@ typedef enum
 
 extern const wiced_bt_cfg_settings_t pbap_client_cfg_settings;
 extern const wiced_bt_cfg_buf_pool_t pbap_client_cfg_buf_pools[];
-
-extern uint32_t  hci_control_proc_rx_cmd( uint8_t *p_data, uint32_t length );
 extern const uint8_t pbap_client_sdp_db[];
 
 extern uint8_t pairing_allowed;
@@ -307,7 +305,6 @@ typedef union
 } hci_control_pbc_event_t;
 
 /* External Definitions */
-extern void     wiced_bt_trace_array( const char *string, const uint8_t* array, const uint16_t len );
 extern uint16_t wiced_app_cfg_sdp_record_get_size(void);
 extern void *GKI_getbuf (uint16_t);
 extern int hci_control_find_nvram_id(uint8_t *p_data, int len);
