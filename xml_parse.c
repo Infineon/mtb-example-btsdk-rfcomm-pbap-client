@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -668,7 +668,7 @@ static void xml_read_char(tXML_MUL_STATE *p_st)
 **     buffer must be NULL, i.e p_st->data_bfr must be NULL.
 **
 **     xml_get_next handles end-of-line as specified in the xml spec. It
-**     passes, skips or normalises (p.29 in XML spec) white spaces (ws)
+**     passes, skips or normalizes (p.29 in XML spec) white spaces (ws)
 **     as specified in the ws_op param. Note, the ws_op applies when
 **     getting one (or many characters) from Object Store into the
 **     p_st->next_token. It does not apply when pushing the (initial)

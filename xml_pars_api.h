@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -212,7 +212,6 @@ typedef UINT8   tXML_STATUS;
 
 typedef struct
 {
-    UINT8       *p_hdr;  /* the beginning of GKI buffer */
     UINT8       *p_begin;/* the beginning of XML data */
     UINT8       *p_end;  /* the end of XML data */
 } tXML_OS;
@@ -246,7 +245,7 @@ typedef struct
 **     p_event_data (in) : data, i.e. names values etc, found in the XML
 **                         construct. The data is specific for the XML
 **                         construct and should be casted to the
-**                         proper type as descibed above. May not be NULL.
+**                         proper type as described above. May not be NULL.
 **     p_usr_data (in) :   Same p_usr_data as passed in XML_Parse.
 **
 ** Returns

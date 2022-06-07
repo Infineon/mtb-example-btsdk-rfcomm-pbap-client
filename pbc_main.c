@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -271,6 +271,9 @@ void hci_control_send_pbc_event(uint16_t evt, hci_control_pbc_event_t *p_data, u
     if (wiced_transport_send_buffer(evt, p_trans_buffer, size) != WICED_SUCCESS)
     {
         WICED_BT_TRACE("Err: failed to transport buffer\n");
+#if !defined(CYW20706A2)
+        wiced_transport_free_buffer(p_trans_buffer);
+#endif
     }
 }
 
@@ -927,6 +930,9 @@ void wiced_bt_pbc_data_callback(const UINT8 *p_buf, UINT16 nbytes)
     if (wiced_transport_send_buffer(wiced_bt_pbc_return_evt_code(), p_trans_buffer, nbytes + 4) != WICED_SUCCESS)
     {
         WICED_BT_TRACE("Err: failed to transport buffer\n");
+#if !defined(CYW20706A2)
+        wiced_transport_free_buffer(p_trans_buffer);
+#endif
     }
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -751,13 +751,13 @@ tXML_VLIST_RES XML_VlistParse( tXML_VLIST_PARSER   *p_xml_state,
                                  UINT8 *dst_data,      UINT16 *dst_len,
                                  UINT16               *num_entries )
 {
-    tXML_OS                 xos;
-    BOOLEAN              is_remain = TRUE;
-    tXML_MUL_STATE      *p_xml   = &p_xml_state->xml;
-    tXML_VLIST_STATE   *p_st    = &p_xml_state->xml_user_data;
-    tXML_VLIST_RES      x_res   = XML_VLIST_OK;
-    tXML_RESULT          res     = XML_NO_PROP;
-    UINT16               max_num_prop = BUF3_SIZE/sizeof(tXML_PROP); /* i hope this is sufficient for 1 */
+    tXML_OS             xos = {0};
+    BOOLEAN             is_remain = TRUE;
+    tXML_MUL_STATE      *p_xml = &p_xml_state->xml;
+    tXML_VLIST_STATE    *p_st = &p_xml_state->xml_user_data;
+    tXML_VLIST_RES      x_res = XML_VLIST_OK;
+    tXML_RESULT         res = XML_NO_PROP;
+    UINT16              max_num_prop = BUF3_SIZE/sizeof(tXML_PROP); /* i hope this is sufficient for 1 */
 
 #if (defined(VLIST_DEBUG_XML) && VLIST_DEBUG_XML == TRUE)
     int         xx;

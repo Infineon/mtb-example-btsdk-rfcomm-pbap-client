@@ -1,5 +1,5 @@
 #
-# Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+# Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
 # an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 #
 # This software, including source code, documentation and related
@@ -44,10 +44,9 @@ CONFIG=Debug
 VERBOSE=
 
 # default target
-TARGET=CYW920721B2EVK-02
+TARGET=CYW920721M2EVK-02
 
 SUPPORTED_TARGETS = \
-  CYW920721B2EVK-02 \
   CYW920719B2Q40EVB-01 \
   CYW920706WCDEVAL \
   CYBT-353027-EVAL \
@@ -92,8 +91,9 @@ CY_APP_DEFINES+=\
   -DWICED_BT_TRACE_ENABLE \
   -DOBEX_LIB_SESSION_SUPPORTED
 
-ifeq ($(TARGET),$(filter $(TARGET),CYW920721B2EVK-02 CYW920719B2Q40EVB-01 CYW920721M2EVK-01 CYW920721M2EVK-02 CYW920721M2EVB-03))
+ifneq ($(TARGET),$(filter $(TARGET),CYW920706WCDEVAL))
 CY_APP_DEFINES += -DWICED_PBAP_1_2_SUPPORTED=TRUE
+CY_APP_DEFINES += -DWICED_BT_PBAP_1_2_SUPPORTED=TRUE
 endif # TARGET
 #
 # Components (middleware libraries)
