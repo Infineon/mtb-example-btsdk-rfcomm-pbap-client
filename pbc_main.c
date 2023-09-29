@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2023, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -54,7 +54,7 @@
  * MCU implementation.
  *
  * Features demonstrated
- *  - WICED BT PBAP Client APIs
+ *  - Bluetooth PBAP Client APIs
  *  - Handling of the UART WICED protocol
  *  - SDP configuration
  *  - Setting of the Local Bluetooth Device address from the host MCU
@@ -188,6 +188,28 @@ const wiced_transport_cfg_t transport_cfg =
 
 uint8_t pairing_allowed = 0;
 
+#if defined(CYW20819A1) || defined(CYW20820A1)
+#include "wiced_memory_pre_init.h"
+/* adjust memory allocation for more space for acs applications */
+WICED_MEM_PRE_INIT_CONTROL g_mem_pre_init =
+{
+    #if 1
+    .max_ble_connections  = 1,
+    .max_peripheral_piconet = 2,
+    .max_resolving_list  = 10,
+    .onfound_list_len = 0,
+    .max_multi_adv_instances = 4,
+    #else // default
+    .max_ble_connections  = 6,
+    .max_peripheral_piconet = 4,
+    .max_resolving_list  = 20,
+    .onfound_list_len = 20,
+    .max_multi_adv_instances = 8,
+    #endif
+};
+#endif
+
+
 /*******************************************************************************
  Functions
  *******************************************************************************/
@@ -247,6 +269,8 @@ uint16_t wiced_bt_pbc_return_evt_code()
         return HCI_CONTROL_PBC_EVENT_OUTGOING_CALLS;
     else if(opcode == HCI_CONTROL_PBC_COMMAND_GET_MISSED_CALLS)
         return HCI_CONTROL_PBC_EVENT_MISSED_CALLS;
+    else if(opcode == HCI_CONTROL_PBC_COMMAND_GET_FAVORITE_CONTACTS)
+        return HCI_CONTROL_PBC_EVENT_FAVORITE_CONTACTS;
 
     return HCI_CONTROL_PBC_EVENT_PHONEBOOK;
 }
@@ -803,6 +827,8 @@ BOOLEAN wiced_bt_pbc_get_phonebook(uint16_t opcode, UINT16 max_list_count, UINT1
         file_name = "telecom/och.vcf";
     else if(opcode == HCI_CONTROL_PBC_COMMAND_GET_MISSED_CALLS)
         file_name = "telecom/mch.vcf";
+    else if(opcode == HCI_CONTROL_PBC_COMMAND_GET_FAVORITE_CONTACTS)
+        file_name = "telecom/fav.vcf";
     else
         return ret;
 
@@ -1233,7 +1259,7 @@ wiced_result_t pbap_client_management_callback(wiced_bt_management_evt_t event, 
         break;
 
     case BTM_PAIRING_IO_CAPABILITIES_BLE_REQUEST_EVT:
-        /* Use the default security for BLE */
+        /* Use the default security for LE */
         WICED_BT_TRACE("BTM_PAIRING_IO_CAPABILITIES_BLE_REQUEST_EVT bda %B\n",
                 p_event_data->pairing_io_capabilities_ble_request.bd_addr);
         p_event_data->pairing_io_capabilities_ble_request.local_io_cap = BTM_IO_CAPABILITIES_NONE;

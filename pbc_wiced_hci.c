@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2023, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -438,6 +438,7 @@ void hci_control_pbc_handle_command(uint16_t opcode, uint8_t* p_data, uint32_t l
     case HCI_CONTROL_PBC_COMMAND_GET_INCOMMING_CALLS:
     case HCI_CONTROL_PBC_COMMAND_GET_OUTGOING_CALLS:
     case HCI_CONTROL_PBC_COMMAND_GET_MISSED_CALLS:
+    case HCI_CONTROL_PBC_COMMAND_GET_FAVORITE_CONTACTS:
 
         wiced_bt_pbc_get_phonebook(opcode, WICED_BT_PBC_MAX_ENTRIES, WICED_BT_PBC_START_OFFSET, FALSE);
 
