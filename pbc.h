@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2025, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -285,7 +285,6 @@ typedef struct
 {
     uint8_t                     status;
     BD_ADDR                     bd_addr;
-    wiced_bt_service_id_t       service;
     wiced_bool_t                initiator;          /* connection initiator, local true, peer false */
     hci_control_pbc_fea_mask_t  peer_features;      /* peer supported features */
 } hci_control_pbc_open_t;

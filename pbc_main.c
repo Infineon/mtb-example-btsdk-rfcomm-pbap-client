@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2023, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2025, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -139,7 +139,6 @@ typedef struct
     wiced_bt_device_address_t   bd_address;
     wiced_bt_pbc_list_parser_t  xml_parser;
     BOOLEAN                     disable_pending;
-    UINT8                       service;
     UINT8                       state_bitfield; /* service state */
     BOOLEAN                     auth_already_failed_once;
     uint16_t                    opcode;
@@ -576,7 +575,6 @@ void wiced_bt_pbc_init(void)
 {
     WICED_BT_TRACE("wiced_bt_pbc_init");
     wiced_bt_pbc_sv_cb.disable_pending = FALSE;
-    wiced_bt_pbc_sv_cb.service = 0;
     wiced_bt_pbc_sv_cb.state_bitfield = WICED_BT_PBC_FREE;
     wiced_bt_pbc_sv_cb.is_xml = TRUE;
 }
@@ -688,7 +686,6 @@ void wiced_bt_pbc_disable_hdlr()
 
     if (wiced_bt_pbc_is_connected())
     {
-        WICED_BT_TRACE("wiced_bt_pbc_disable_hdlr BTA_PbcClose service = %d", wiced_bt_pbc_sv_cb.service);
         wiced_bt_pbc_sv_cb.disable_pending = TRUE;
         wiced_bt_pbc_op_close();
     }
@@ -1007,9 +1004,7 @@ void wiced_bt_pbc_event_callback(wiced_bt_pbc_evt_t event, wiced_bt_pbc_t* p_buf
     case WICED_BT_PBC_OPEN_EVT: /* Connection Open*/
         WICED_BT_TRACE("WICED_BT_PBC_OPEN_EVT event");
         wiced_bt_pbc_clear_pending_req();
-        pbc_event.open.service = p_buffer->open.service;
         pbc_event.open.status = WICED_BT_SUCCESS;
-        wiced_bt_pbc_sv_cb.service = p_buffer->open.service;
         pbc_event.open.peer_features = p_buffer->open.peer_features;
 
         if (wiced_bt_pbc_sv_cb.state_bitfield == WICED_BT_PBC_OPEN_PENDING)
@@ -1017,10 +1012,7 @@ void wiced_bt_pbc_event_callback(wiced_bt_pbc_evt_t event, wiced_bt_pbc_t* p_buf
         else
             pbc_event.open.initiator = FALSE;
 
-        wiced_bt_pbc_sv_cb.state_bitfield = p_buffer->open.service ? WICED_BT_PBC_OPENED : WICED_BT_PBC_FREE;
-
-        WICED_BT_TRACE("WICED_BT_PBC_OPEN_EVT event service = %d", wiced_bt_pbc_sv_cb.service);
-
+		wiced_bt_pbc_sv_cb.state_bitfield = WICED_BT_PBC_OPENED;
         memcpy(pbc_event.open.bd_addr , wiced_bt_pbc_sv_cb.bd_address, BD_ADDR_LEN);
 
         hci_control_send_pbc_event(HCI_CONTROL_PBC_EVENT_CONNECTED, &pbc_event, sizeof(pbc_event.open));
@@ -1034,7 +1026,6 @@ void wiced_bt_pbc_event_callback(wiced_bt_pbc_evt_t event, wiced_bt_pbc_t* p_buf
         {
             memset(&pbc_event, 0, sizeof(pbc_event));
 
-            wiced_bt_pbc_sv_cb.service = 0;
             wiced_bt_pbc_sv_cb.state_bitfield = WICED_BT_PBC_FREE;
 
             if (wiced_bt_pbc_sv_cb.disable_pending)
